@@ -4,12 +4,8 @@ import { adapt } from '@cycle/run/lib/adapt';
 import xs, { Stream } from 'xstream';
 import { ReactDOMSource } from './interfaces';
 
-export interface Handlers {
-  [name: string]: Stream<any>;
-};
-
 export default class MainReactDOMSource implements ReactDOMSource {
-  private handlers = {};
+  private events = {};
   private selector: string | null;
 
   constructor(selector: (string | null) = null) {
@@ -21,26 +17,29 @@ export default class MainReactDOMSource implements ReactDOMSource {
   }
 
   event(key) {
-    this.handlers[key] = this.handlers[key] || xs.create();
-    return adapt(this.handlers[key]);
+    this.events[key] = this.events[key] || { stream: xs.create() };
+    return adapt(this.events[key].stream);
   }
 
   handler(key) {
-    let stream = this.handlers[key];
+    let stream = this.events[key].stream;
     if (stream === undefined) {
       if (process && process.env && process.env.NODE_ENV !== 'production') {
         console.warn(`Using event handler ${key} before using stream`);
       }
 
-      this.handlers[key] = xs.create();
-      stream = this.handlers[key];
+      this.events[key] = { stream: xs.create() };
+      stream = this.events[key].stream;
     }
 
-    return function reactDOMDriverHandler (arg1, ...args) {
+    function reactDOMDriverHandler (arg1, ...args) {
       return (args.length > 0) ?
         stream._n([ arg1, ...args ]) :
         stream._n(arg1);
     };
+
+    this.events[key].handler = reactDOMDriverHandler;
+    return reactDOMDriverHandler;
   }
 
   isolateSource(_, scope) {
