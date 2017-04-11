@@ -1,5 +1,5 @@
 import { Driver } from '@cycle/run';
-import React, { Component } from 'react';
+import { createElement, Component } from 'react';
 import { ReactElement } from '@types/react';
 import ReactDOM from 'react-dom';
 import MainReactDOMSource from './MainReactDOMSource';
@@ -37,7 +37,7 @@ const makeReactDOMDriver: MakeReactDOMDriver = function(querySelector) {
       }
     }
 
-    ReactDOM.render(React.createElement(RootComponent), container);
+    ReactDOM.render(createElement(RootComponent), container);
 
     return new MainReactDOMSource('CYCLE_REACT_DRIVER');
   }
