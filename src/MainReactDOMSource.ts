@@ -20,20 +20,20 @@ export default class MainReactDOMSource implements ReactDOMSource {
     return new MainReactDOMSource(selector);
   }
 
-  event(name) {
-    this.handlers[name] = this.handlers[name] || xs.create();
-    return adapt(this.handlers[name]);
+  event(key) {
+    this.handlers[key] = this.handlers[key] || xs.create();
+    return adapt(this.handlers[key]);
   }
 
-  handler(name) {
-    let stream = this.handlers[name];
+  handler(key) {
+    let stream = this.handlers[key];
     if (stream === undefined) {
       if (process && process.env && process.env.NODE_ENV !== 'production') {
-        console.warn(`Using event handler ${name} before using stream`);
+        console.warn(`Using event handler ${key} before using stream`);
       }
 
-      this.handlers[name] = xs.create();
-      stream = this.handlers[name];
+      this.handlers[key] = xs.create();
+      stream = this.handlers[key];
     }
 
     return function reactDOMDriverHandler (arg1, ...args) {
