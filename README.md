@@ -141,6 +141,17 @@ return {
 };
 ```
 
+### helpers
+
+#### `fromReactComponent(ReactComponent) => CycleComponent`
+Creates a Cycle.js component from a React component
+
+##### parameters:
+* `ReactComponent`: The raw React component, pure or stateful
+
+##### returns:
+* `CycleComponent`: A Cycle.js component that takes in `sources` (in particular, a `React` source provided by cycle-reactdom-driver) and returns `sinks` (in particular, a `React` sink of React elements)
+
 ## contributing
 
 #### todo
