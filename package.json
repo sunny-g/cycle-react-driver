@@ -1,20 +1,77 @@
 {
-  "name": "@sunny-g/cycle-react-driver",
-  "version": "0.0.1",
-  "description": "Unofficial Cycle.js driver for React",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "name": "@sunny-g/cycle-reactdom-driver",
+  "version": "0.0.2",
+  "description": "(un)official React(DOM) driver for Cycle.js",
+  "author": "Sunny G <sunny.gonna@gmail.com> (http://blog.sunnyg.io)",
+  "homepage": "https://github.com/sunny-g/cycle-reactdom-driver",
+  "repository": "https://github.com/sunny-g/cycle-reactdom-driver",
+  "bugs": "https://github.com/sunny-g/cycle-reactdom-driver/issues",
+  "license": "ISC",
+  "main": "dist/cycle-reactdom-driver.js",
+  "module": "dist/es2015/index.js",
+  "types": "dist/es2015/index.d.ts",
   "keywords": [
     "cycle",
     "react",
-    "rx"
+    "rxjs",
+    "mostjs",
+    "xstream"
   ],
-  "author": "Sunny G <sunny.gonna@gmail.com> (http://blog.sunnyg.io)",
-  "license": "ISC",
+  "scripts": {
+    "build": "webpack",
+    "build:watch": "npm run build -- --watch",
+    "prepublish": "tsc && npm run build -- -p",
+    "test": "jest --no-cache",
+    "test:watch": "npm run test -- --watch"
+  },
+  "babel": {
+    "env": {
+      "test": {
+        "plugins": [
+          "transform-es2015-modules-commonjs"
+        ]
+      }
+    }
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/test/*.test.(ts|js)"
+    ],
+    "testResultsProcessor": "<rootDir>/node_modules/ts-jest/coverageprocessor.js",
+    "transform": {
+      "\\.(ts|js)": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    }
+  },
   "dependencies": {
+    "@cycle/run": "*",
+    "@types/react": "^15.0.21",
+    "@types/react-dom": "^0.14.23",
+    "xstream": "^10.4.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^19.2.2",
+    "@types/node": "^7.0.12",
+    "babel-core": "^6.23.1",
+    "babel-loader": "^6.4.0",
+    "babel-preset-es2015": "^6.22.0",
+    "babel-preset-stage-0": "^6.22.0",
+    "jest": "^19.0.2",
+    "jest-cli": "^19.0.2",
+    "ts-jest": "^19.0.1",
+    "ts-loader": "^2.0.1",
+    "typescript": "^2.2.1",
+    "webpack": "^2.3.2"
+  },
+  "peerDependencies": {
     "react": "^15.4.2",
-    "rx": "^4.1.0"
+    "react-dom": "^15.4.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
