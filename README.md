@@ -132,7 +132,7 @@ Example:
 return {
   // ... other sinks...
   REACT: props$.map(({ text }) => (
-  	<input
+    <input
       type="text"
       value={text}
       onChange={onTextChange}
