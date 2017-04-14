@@ -2,7 +2,7 @@ const path = require('path');
 const SRC_DIR = path.resolve(__dirname, 'src');
 const DIST_DIR = path.resolve(__dirname, 'dist');
 const EXAMPLE_DIR = path.resolve(__dirname, 'example');
-const libraryName = 'CycleReactDOMDriver';
+const libraryName = 'CycleReactDriver';
 
 const babelLoader = {
   loader: 'babel-loader',
@@ -32,7 +32,7 @@ module.exports = {
   },
 
   entry: {
-    'cycle-reactdom-driver': './src/index.ts',
+    'cycle-react-driver': './src/index.ts',
   },
 
   output: {
