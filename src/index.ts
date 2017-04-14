@@ -1,5 +1,4 @@
-import makeReactDOMDriver from './reactdom-driver';
-import { fromReactComponent } from './util';
+import makeReactDOMDriver, { fromReactDOMComponent } from './dom';
 
-export { fromReactComponent };
+export { fromReactDOMComponent };
 export default makeReactDOMDriver;

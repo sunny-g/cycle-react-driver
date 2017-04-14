@@ -2,9 +2,15 @@
 
 import { adapt } from '@cycle/run/lib/adapt';
 import xs, { Stream } from 'xstream';
-import { ReactDOMSource } from './interfaces';
 
-export default class MainReactDOMSource implements ReactDOMSource {
+export interface IReactSource {
+  select(selector: string): IReactSource;
+  event(name: string): Stream<any> | any;
+  handler(name: string): (...args: any[]) => void;
+  isolateSource(source: IReactSource, scope: string | null): IReactSource;
+};
+
+export default class ReactSource implements IReactSource {
   private events = {};
   private selector: string | null;
 
@@ -13,7 +19,7 @@ export default class MainReactDOMSource implements ReactDOMSource {
   }
 
   select(selector) {
-    return new MainReactDOMSource(selector);
+    return new ReactSource(selector);
   }
 
   event(key) {
@@ -43,7 +49,7 @@ export default class MainReactDOMSource implements ReactDOMSource {
   }
 
   isolateSource(_, scope) {
-    return new MainReactDOMSource(scope);
+    return new ReactSource(scope);
   }
 
 }

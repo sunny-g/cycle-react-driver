@@ -12,7 +12,7 @@ npm install --save @sunny-g/cycle-reactdom-driver
 Basic usage with the Cycle.js [counter](https://github.com/cyclejs/cyclejs/tree/master/examples/counter) example:
 
 ```js
-import makeReactDOMDriver from '@sunny-g/cycle-reactdom-driver';
+import makeReactDOMDriver from '@sunny-g/cycle-react-driver/es2015/dom';
 
 function main(sources) {
   const incrementReducer$ = sources.REACT
@@ -143,14 +143,14 @@ return {
 
 ### helpers
 
-#### `fromReactComponent(ReactComponent) => CycleComponent`
-Creates a Cycle.js component from a React component
+#### `fromReactDOMComponent(ReactComponent) => CycleComponent`
+Creates a Cycle.js component from a ReactDOM component
 
 ##### parameters:
 * `ReactComponent`: The raw React component, pure or stateful
 
 ##### returns:
-* `CycleComponent`: A Cycle.js component that takes in `sources` (in particular, a **`React`** source provided by `cycle-reactdom-driver` and a `props` source that passes in desired **`props`**) and returns `sinks` (in particular, a **`React`** sink of React elements)
+* `CycleComponent`: A Cycle.js component that takes in `sources` (in particular, a **`React`** source provided by `cycle-reactdom-driver` and a **`props`** source that passes in desired `props`) and returns `sinks` (in particular, a **`React`** sink of React elements)
 
 ## contributing
 
