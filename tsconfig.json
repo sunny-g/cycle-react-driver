@@ -6,7 +6,7 @@
     "target": "es5",
     "declaration": true,
     "sourceMap": true,
-    "outDir": "dist/es2015",
+    "outDir": "es2015",
 
     "allowSyntheticDefaultImports": true,
     "alwaysStrict": true

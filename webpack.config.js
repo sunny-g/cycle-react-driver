@@ -1,6 +1,6 @@
 const path = require('path');
 const SRC_DIR = path.resolve(__dirname, 'src');
-const DIST_DIR = path.resolve(__dirname, 'dist');
+const DIST_DIR = path.resolve(__dirname, 'commonjs');
 const EXAMPLE_DIR = path.resolve(__dirname, 'example');
 const libraryName = 'CycleReactDriver';
 

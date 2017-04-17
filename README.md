@@ -78,6 +78,8 @@ run(main, {
 Example:
 
 ```js
+import makeReactDOMDriver from '@sunny-g/cycle-react-driver/es2015/dom;
+
 run(main, {
   // ... other drivers
   REACT: makeReactDOMDriver('#app-container'),
@@ -152,6 +154,22 @@ Creates a Cycle.js component from a ReactDOM component
 ##### returns:
 * `CycleComponent`: A Cycle.js component that takes in `sources` (in particular, a **`React`** source provided by `cycle-reactdom-driver` and a **`props`** source that passes in desired `props`) and returns `sinks` (in particular, a **`React`** sink of React elements)
 
+Example:
+
+```js
+import { fromReactDOMComponent } from '@sunny-g/cycle-react-driver/es2015/dom';
+
+const View = props => (
+  <input
+    type="text"
+    value={props.text}
+    onChange={props.onTextChange}
+  />
+);
+
+const CycleViewComponent = fromReactDOMComponent(View);
+```
+
 ## contributing
 
 #### todo
@@ -159,6 +177,7 @@ Creates a Cycle.js component from a ReactDOM component
 - add testing mock source
 - explain contribution process
 - add more tests :)
+- add more drivers for more React libs
 - explain why I wrote this
 
 ## license

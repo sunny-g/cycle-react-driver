@@ -7,12 +7,14 @@
   "repository": "https://github.com/sunny-g/cycle-react-driver",
   "bugs": "https://github.com/sunny-g/cycle-react-driver/issues",
   "license": "ISC",
-  "main": "dist/cycle-react-driver.js",
-  "module": "dist/es2015/index.js",
-  "types": "dist/es2015/index.d.ts",
+  "main": "commonjs/cycle-react-driver.js",
+  "module": "es2015/index.js",
+  "types": "es2015/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "commonjs",
+    "es2015",
+    "src",
+    "test"
   ],
   "keywords": [
     "cycle",

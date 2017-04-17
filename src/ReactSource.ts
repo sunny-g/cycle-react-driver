@@ -38,14 +38,14 @@ export default class ReactSource implements IReactSource {
       stream = this.events[key].stream;
     }
 
-    function reactDOMDriverHandler (arg1, ...args) {
+    function reactDriverHandler (arg1, ...args) {
       return (args.length > 0) ?
         stream._n([ arg1, ...args ]) :
         stream._n(arg1);
     };
 
-    this.events[key].handler = reactDOMDriverHandler;
-    return reactDOMDriverHandler;
+    this.events[key].handler = reactDriverHandler;
+    return reactDriverHandler;
   }
 
   isolateSource(_, scope) {
