@@ -14,7 +14,8 @@
 
   "exclude": [
     "node_modules",
-    "dist",
+    "commonjs",
+    "es2015",
     "example",
     "test"
   ]
