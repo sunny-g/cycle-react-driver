@@ -1,11 +1,11 @@
-# cycle-reactdom-driver
-*(un)official ReactDOM driver for Cycle.js*
+# cycle-react-driver
+*(un)official React driver for Cycle.js*
 
 <!--## why-->
 
 ## installation
 ```
-npm install --save @sunny-g/cycle-reactdom-driver
+npm install --save @sunny-g/cycle-react-driver
 ```
 
 ## usage
