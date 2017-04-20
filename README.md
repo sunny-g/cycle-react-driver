@@ -88,6 +88,14 @@ run(main, {
 
 ### `react` source
 
+#### `react.select(selector: string | null): ReactSource`
+
+##### parameters:
+* `selector: string | null`: A key used to define the new `ReactSource`
+
+##### returns:
+* `ReactSource`: A new `ReactSource` that defines it's own handler-event stream pairs
+
 #### `react.handler(key: string): (...args: any[]) => void`
 
 ##### parameters:
