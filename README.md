@@ -86,7 +86,7 @@ run(main, {
 Example:
 
 ```js
-import makeReactDOMDriver from '@sunny-g/cycle-react-driver/es2015/dom;
+import makeReactDOMDriver from '@sunny-g/cycle-react-driver/es2015/dom';
 
 run(main, {
   // ... other drivers
