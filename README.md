@@ -1,7 +1,15 @@
 # cycle-react-driver
 *(un)official React driver for Cycle.js*
 
-<!--## why-->
+## why
+[React](https://facebook.github.io/react/) is a fantastic pseudo-functional view library that has a great community of useful third-party components. I wanted to use React (and eventually, [all](https://facebook.github.io/react-native/) [of](https://facebook.github.io/react-vr/) [it's](https://microsoft.github.io/reactxp/) [various](https://github.com/Yomguithereal/react-blessed) [flavors](https://github.com/ptmt/react-native-macos)) with [Cycle.js](https://cycle.js.org) without having to write a driver for each, so I wrote this simpler one instead!
+
+Unlike the Cycle.js React Native driver, this driver does two much more basic things:
+
+1. provides callback handlers (for you to pass to your components as function props) and their matching streams via the React source
+2. subscribes to your React sink stream to render the virtual DOM tree
+
+Enjoy!
 
 ## installation
 ```
