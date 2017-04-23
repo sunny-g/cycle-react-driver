@@ -153,10 +153,11 @@ return {
 
 ### helpers
 
-#### `fromReactDOMComponent(ReactComponent) => CycleComponent`
+#### `fromReactDOMComponent(sinkName, ReactComponent) => CycleComponent`
 Creates a Cycle.js component from a ReactDOM component
 
 ##### parameters:
+* `sinkName: string`: Name of the sink you want to assign the React element stream to
 * `ReactComponent`: The raw React component, pure or stateful
 
 ##### returns:
@@ -175,7 +176,42 @@ const View = props => (
   />
 );
 
-const CycleViewComponent = fromReactDOMComponent(View);
+const CycleViewComponent = fromReactDOMComponent('REACT', View);
+```
+
+#### `toReactDOMComponent(sinkName, CycleComponent) => ReactComponent`
+Creates a ReactDOM component from a Cycle.js component
+
+##### parameters:
+* `sinkName: string`: Name of the sink containing the React element stream
+* `CycleComponent`: A Cycle component
+  * **NOTE:** Since the Cycle component is not (currently) `run` within the React component, the Cycle component should only take in a `ReactDOM` and `props` source and return only a `ReactDOMDriver` sink
+
+##### returns:
+* `ReactDOMComponent`: A normal React DOM class component
+
+Example:
+
+```js
+import { toReactDOMComponent } from '@sunny-g/cycle-react-driver/es2015/dom';
+
+const CycleViewComponent = (sources) => ({
+  REACT: sources.props.map(props =>
+    <input
+      type="text"
+      value={props.text}
+      onChange={props.onTextChange}
+    />
+  ),
+});
+
+const ReactComponent = toReactDOMComponent('REACT', CycleViewComponent);
+
+// then, it can be used as such:
+<ReactComponent
+  text={"sample text"}
+  onTextChange={textChangeHandler}
+/>
 ```
 
 ## contributing
