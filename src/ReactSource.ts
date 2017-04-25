@@ -2,6 +2,7 @@
 
 import { adapt } from '@cycle/run/lib/adapt';
 import xs, { Stream } from 'xstream';
+import { isProd } from './util';
 
 export interface IReactSource {
   select(selector: string): IReactSource;
@@ -30,7 +31,7 @@ export default class ReactSource implements IReactSource {
   handler(key) {
     let stream = this.events[key].stream;
     if (stream === undefined) {
-      if (process && process.env && process.env.NODE_ENV !== 'production') {
+      if (!isProd()) {
         console.warn(`Using event handler ${key} before using stream`);
       }
 
