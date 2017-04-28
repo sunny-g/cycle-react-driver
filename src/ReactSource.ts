@@ -23,19 +23,21 @@ export default class ReactSource implements IReactSource {
     return new ReactSource(selector);
   }
 
-  event(key) {
-    this.events[key] = this.events[key] || { stream: xs.create() };
+  event(key, withMemory = false) {
+    const createStream = withMemory ? xs.createWithMemory : xs.create;
+    this.events[key] = this.events[key] || { stream: createStream() };
     return adapt(this.events[key].stream);
   }
 
-  handler(key) {
+  handler(key, withMemory = false) {
     let stream = this.events[key].stream;
     if (stream === undefined) {
       if (!isProd()) {
         console.warn(`Using event handler ${key} before using stream`);
       }
 
-      this.events[key] = { stream: xs.create() };
+      const createStream = withMemory ? xs.createWithMemory : xs.create;
+      this.events[key] = { stream: createStream() };
       stream = this.events[key].stream;
     }
 
