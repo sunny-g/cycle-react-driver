@@ -24,31 +24,33 @@ export default class ReactSource implements IReactSource {
   }
 
   event(key, withMemory = false) {
-    const createStream = withMemory ? xs.createWithMemory : xs.create;
-    this.events[key] = this.events[key] || { stream: createStream() };
-    return adapt(this.events[key].stream);
+    const { stream } = this._getOrCreateEventPair(key, withMemory);
+    return adapt(stream);
   }
 
   handler(key, withMemory = false) {
-    let stream = this.events[key].stream;
-    if (stream === undefined) {
-      if (!isProd()) {
-        console.warn(`Using event handler ${key} before using stream`);
-      }
+    const { handler } = this._getOrCreateEventPair(key, withMemory);
+    return handler;
+  }
 
-      const createStream = withMemory ? xs.createWithMemory : xs.create;
-      this.events[key] = { stream: createStream() };
-      stream = this.events[key].stream;
+  _getOrCreateEventPair(key, withMemory) {
+    if (this.events[key] === undefined || this.events[key] === null) {
+      const stream = withMemory ?
+        xs.createWithMemory() :
+        xs.create();
+
+      const cycleReactDriverEventHandler = (firstArg, ...args) =>
+        (args.length > 0)
+          ? stream.shamefullySendNext([ firstArg, ...args ])
+          : stream.shamefullySendNext(firstArg);
+
+      this.events[key] = {
+        stream,
+        handler: cycleReactDriverEventHandler,
+      };
     }
 
-    function reactDriverHandler (arg1, ...args) {
-      return (args.length > 0) ?
-        stream._n([ arg1, ...args ]) :
-        stream._n(arg1);
-    };
-
-    this.events[key].handler = reactDriverHandler;
-    return reactDriverHandler;
+    return this.events[key];
   }
 
   isolateSource(_, scope) {
