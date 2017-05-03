@@ -81,7 +81,7 @@ run(main, {
 ### `makeReactDOMDriver`
 
 ##### parameters:
-* `querySelector: string`: DOM query selector for the element in which the root React component will be rendered
+* `domElement: Element`: DOM element in which the root React component will be rendered
 
 Example:
 
@@ -90,7 +90,7 @@ import makeReactDOMDriver from '@sunny-g/cycle-react-driver/es2015/dom';
 
 run(main, {
   // ... other drivers
-  REACT: makeReactDOMDriver('#app-container'),
+  REACT: makeReactDOMDriver(document.querySelector('#app-container')),
 });
 ```
 
@@ -104,10 +104,11 @@ run(main, {
 ##### returns:
 * `ReactSource`: A new `ReactSource` that defines it's own handler-event stream pairs
 
-#### `react.handler(key: string): (...args: any[]) => void`
+#### `react.handler(key: string, withMemory?: boolean): (...args: any[]) => void`
 
 ##### parameters:
 * `key: string`: Unique key for the handler-event stream pair
+* `withMemory?: boolean = false`: If the handler is called before the stream is used, set this to `true` for the stream to replay the last event to new subscribers; defaults to `false`
 
 ##### returns:
 * `(...args: any[]) => void`: Function that should passed down to a React element as an event handler
@@ -118,13 +119,14 @@ Example:
 const onTextChange = sources.REACT.handler('onTextChange');
 ```
 
-#### `react.event(key: string): Stream<any | any[]>`
+#### `react.event(key: string, withMemory?: boolean): MemoryStream<any | any[]> | Stream<any | any[]>`
 
 ##### parameters:
 * `key: string`: Unique key for the handler-event stream pair
+* `withMemory?: boolean = false`: If the handler is called before the stream is used, set this to `true` for the stream to replay the last event to new subscribers; defaults to `false`
 
 ##### returns:
-* `Stream<any | any[]>`: A stream that emits the value(s) given to the matching `handler` whenever the `handler` is invoked
+* `Stream<any | any[]> | MemoryStream<any | any[]>`: A stream that emits the value(s) given to the matching `handler` whenever the `handler` is invoked
   * **NOTE**: If the React element invokes the matching `handler` function with more than one argument, the stream will emit an `Array` of the arguments, rather than just the first argument - otherwise, the stream emits the single argument
 
 Example:
@@ -187,7 +189,7 @@ const View = props => (
 const CycleViewComponent = fromReactDOMComponent('REACT', View);
 ```
 
-#### `toReactDOMComponent(sinkName, CycleComponent) => ReactComponent`
+#### `toReactDOMComponent(sinkName, CycleComponent) => ReactComponent` **(EXPERIMENTAL)**
 Creates a ReactDOM component from a Cycle.js component
 
 ##### parameters:

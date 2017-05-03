@@ -15,7 +15,7 @@ export interface RootComponentState {
 export interface IReactCycleComponent extends Component<null, RootComponentState> {};
 
 export interface MakeReactDOMDriver {
-  ( element: Element,
+  ( domElement: Element,
   ): Driver<ReactDOMSink, ReactSource>
 }
 
@@ -69,15 +69,15 @@ function toReactDOMComponent(sinkName = 'REACT', CycleComponent): any {
       propsListener.next(nextProps);
     }
 
-    public render() { return this.state.vtree };
+    public render() { return this.state.vtree; };
   }
 }
 
-const makeReactDOMDriver: MakeReactDOMDriver = function(element) {
+const makeReactDOMDriver: MakeReactDOMDriver = function(domElement) {
   return function reactDOMDriver(vtree$: ReactDOMSink, reactDriverName: string): ReactSource {
     const MainCycleComponent = () => ({ [reactDriverName]: vtree$ });
     const MainReactComponent = toReactDOMComponent(reactDriverName, MainCycleComponent);
-    render(createElement(MainReactComponent), element);
+    render(createElement(MainReactComponent), domElement);
 
     return new ReactSource('CYCLE_REACT_DRIVER');
   };
