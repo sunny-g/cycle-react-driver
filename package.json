@@ -1,6 +1,6 @@
 {
   "name": "@sunny-g/cycle-react-driver",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "description": "(un)official React driver for Cycle.js",
   "author": "Sunny G <sunny.gonna@gmail.com> (http://blog.sunnyg.io)",
   "homepage": "https://github.com/sunny-g/cycle-react-driver",
@@ -24,9 +24,9 @@
     "xstream"
   ],
   "scripts": {
-    "build": "webpack",
-    "build:watch": "npm run build -- --watch",
-    "prepublish": "npm test && tsc && npm run build -- -p",
+    "build": "tsc && webpack",
+    "build:watch": "tsc --watch & webpack --watch",
+    "prepublish": "npm test && npm run build",
     "test": "jest --no-cache",
     "test:watch": "npm test -- --watch"
   },
