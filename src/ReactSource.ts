@@ -40,7 +40,7 @@ export default class ReactSource implements IReactSource {
         xs.create();
 
       const cycleReactDriverEventHandler = (firstArg, ...args) =>
-        (args.length > 0)
+        (args.length > 0 || Array.isArray(firstArg))
           ? stream.shamefullySendNext([ firstArg, ...args ])
           : stream.shamefullySendNext(firstArg);
 
