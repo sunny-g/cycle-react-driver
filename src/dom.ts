@@ -5,6 +5,7 @@ import { render } from 'react-dom';
 import xs, { Stream } from 'xstream';
 import { ComponentClass, ReactElement } from '@types/react';
 import ReactSource from './ReactSource';
+import { isStateless } from './util';
 
 export type ReactDOMSink = Stream<ReactElement<any>> | any;
 
@@ -25,7 +26,8 @@ function fromReactDOMComponent(sinkName = 'REACT', ReactComponent: ComponentClas
     [sinkName]: props
       .map(({ ref = () => {}, key = '', ...props }) => (
         (ReactComponent === undefined) ?
-          null :
+          null : isStateless(ReactComponent) ?
+          createElement(ReactComponent, { key, ...props }) :
           createElement(ReactComponent, { ref, key, ...props })
       )),
   });
