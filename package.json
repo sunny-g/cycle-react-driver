@@ -1,6 +1,6 @@
 {
   "name": "@sunny-g/cycle-react-driver",
-  "version": "0.4.11",
+  "version": "0.5.0",
   "description": "(un)official React driver for Cycle.js",
   "author": "Sunny G <sunny.gonna@gmail.com> (http://blog.sunnyg.io)",
   "homepage": "https://github.com/sunny-g/cycle-react-driver",
