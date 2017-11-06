@@ -1,9 +1,8 @@
 import { Driver } from '@cycle/run';
 import { adapt } from '@cycle/run/lib/adapt';
-import { createElement, Component } from 'react';
+import { createElement, Component, ComponentClass, ReactElement } from 'react';
 import { render } from 'react-dom';
 import xs, { Stream } from 'xstream';
-import { ComponentClass, ReactElement } from '@types/react';
 import ReactSource from './ReactSource';
 import { isStateless } from './util';
 
@@ -20,6 +19,16 @@ export interface MakeReactDOMDriver {
   ): Driver<ReactDOMSink, ReactSource>
 }
 
+// options for `toReactDOMComponent`
+const defaultToReactDOMComponentOptions = {
+  sinkName: 'REACT',
+
+  // if starting the application within the React component
+  shouldRun: false,
+  setup: (_1, _2) => () => () => {},
+  drivers: {},
+};
+
 // TODO: fix this typing!
 function fromReactDOMComponent(sinkName = 'REACT', ReactComponent: ComponentClass<any>) {
   const CycleReactComponent = ({ props = adapt(xs.of({})) }) => ({
@@ -35,41 +44,32 @@ function fromReactDOMComponent(sinkName = 'REACT', ReactComponent: ComponentClas
   return CycleReactComponent;
 }
 
-// TODO: should take in an object of drivers/sources instead of `sinkName` to pass into the CycleComponent
-// TODO: fix this typing!
-function toReactDOMComponent(sinkName = 'REACT', CycleComponent): any {
-  let propsListener: any;
+function toReactDOMComponent(_opts, CycleComponent): any {
+  const opts = {
+    ...defaultToReactDOMComponentOptions,
+    ..._opts,
+  }
+
+  let propsListener = { next(_) {}, error(_) {}, complete() {} };
+  let run = defaultToReactDOMComponentOptions.setup(null, null);
+  let dispose = () => {};
 
   return class ReactCycleComponent extends Component<null, RootComponentState> implements IReactCycleComponent {
     constructor(props) {
       super(props);
       this.state = { vtree: null };
+
+      const [ _propsListener, _run ] = setup.call(this, opts, CycleComponent);
+
+      propsListener = _propsListener;
+      run = _run;
     }
 
-    public componentWillMount() {
-      const props$ = xs.create({
-        start: (listener) => {
-          listener.next(this.props);
-          propsListener = listener;
-        },
-        stop() {},
-      });
+    public componentWillMount() { dispose = run(); }
 
-      const sources = {
-        [sinkName]: new ReactSource(null),
-        props: adapt(props$),
-      };
-      const sinks = CycleComponent(sources);
-      const vtree$ = xs.from(sinks[sinkName]);
-      vtree$.addListener({
-        next: vtree => this.setState(() => ({ vtree })),
-      });
+    public componentWillUnmount() { dispose(); }
 
-    }
-
-    public componentWillReceiveProps(nextProps) {
-      propsListener.next(nextProps);
-    }
+    public componentWillReceiveProps(nextProps) { propsListener.next(nextProps); }
 
     public render() { return this.state.vtree; };
   }
@@ -78,7 +78,10 @@ function toReactDOMComponent(sinkName = 'REACT', CycleComponent): any {
 const makeReactDOMDriver: MakeReactDOMDriver = function(domElement) {
   return function reactDOMDriver(vtree$: ReactDOMSink, reactDriverName: string): ReactSource {
     const MainCycleComponent = () => ({ [reactDriverName]: vtree$ });
-    const MainReactComponent = toReactDOMComponent(reactDriverName, MainCycleComponent);
+    const MainReactComponent = toReactDOMComponent({
+      shouldRun: false,
+      sinkName: reactDriverName,
+    }, MainCycleComponent);
     render(createElement(MainReactComponent), domElement);
 
     return new ReactSource('CYCLE_REACT_DRIVER');
@@ -88,3 +91,55 @@ const makeReactDOMDriver: MakeReactDOMDriver = function(domElement) {
 export { fromReactDOMComponent };
 export { toReactDOMComponent };
 export default makeReactDOMDriver;
+
+/*
+ * helper for converting a Cycle component into a React component
+ * optionally, `run`s the Cycle component on mount
+ */
+function setup({ sinkName, shouldRun, drivers, setup }, CycleComponent) {
+  let vtree$ = xs.empty();
+  let propsListener;
+  let run = () => {};
+
+  const props$ = xs.create({
+    start: (listener) => {
+      listener.next(this.props);
+      propsListener = listener;
+    },
+    stop() {},
+  });
+
+  const propsSource = adapt(props$);
+
+  if (shouldRun) {
+    // create drivers (adding props as a source)
+    // grab vtree$ from sinks
+    // return the application's `run` function
+
+    const allDrivers = {
+      ...drivers,
+      props: propsSource,
+    }
+
+    const { sinks, _run } = setup(CycleComponent, allDrivers);
+    run = _run;
+    vtree$ = xs.from(sinks[sinkName]);
+  } else {
+    // create sources
+    // grab vtree$ from sinks
+
+    const sources = {
+      [sinkName]: new ReactSource(null),
+      props: propsSource,
+    };
+
+    const sinks = CycleComponent(sources);
+    vtree$ = xs.from(sinks[sinkName]);
+  }
+
+  vtree$.addListener({
+    next: vtree => this.setState(() => ({ vtree })),
+  });
+
+  return [propsListener, run];
+}
