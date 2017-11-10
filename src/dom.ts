@@ -28,6 +28,7 @@ const defaultToReactDOMComponentOptions = {
   setup: (_1, _2) => () => () => {},
   drivers: {},
 };
+const defaultListener = { next(_) {}, error(_) {}, complete() {} };
 
 // TODO: fix this typing!
 function fromReactDOMComponent(sinkName = 'REACT', ReactComponent: ComponentClass<any>) {
@@ -50,7 +51,7 @@ function toReactDOMComponent(_opts, CycleComponent): any {
     ..._opts,
   }
 
-  let propsListener = { next(_) {}, error(_) {}, complete() {} };
+  let propsListener = defaultListener;
   let run = defaultToReactDOMComponentOptions.setup(null, null);
   let dispose = () => {};
 
@@ -98,11 +99,11 @@ export default makeReactDOMDriver;
  */
 function setup({ sinkName, shouldRun, drivers, setup }, CycleComponent) {
   let vtree$ = xs.empty();
-  let propsListener;
-  let run = () => {};
+  let propsListener = defaultListener;
+  let run = defaultToReactDOMComponentOptions.setup(null, null);
 
   const props$ = xs.create({
-    start: (listener) => {
+    start: listener => {
       listener.next(this.props);
       propsListener = listener;
     },
@@ -116,11 +117,7 @@ function setup({ sinkName, shouldRun, drivers, setup }, CycleComponent) {
     // grab vtree$ from sinks
     // return the application's `run` function
 
-    const allDrivers = {
-      ...drivers,
-      props: propsSource,
-    }
-
+    const allDrivers = { ...drivers, props: propsSource };
     const { sinks, _run } = setup(CycleComponent, allDrivers);
     run = _run;
     vtree$ = xs.from(sinks[sinkName]);
@@ -128,18 +125,12 @@ function setup({ sinkName, shouldRun, drivers, setup }, CycleComponent) {
     // create sources
     // grab vtree$ from sinks
 
-    const sources = {
-      [sinkName]: new ReactSource(null),
-      props: propsSource,
-    };
-
+    const sources = { [sinkName]: new ReactSource(null), props: propsSource };
     const sinks = CycleComponent(sources);
     vtree$ = xs.from(sinks[sinkName]);
   }
 
-  vtree$.addListener({
-    next: vtree => this.setState(() => ({ vtree })),
-  });
+  vtree$.addListener({ next: vtree => this.setState(() => ({ vtree })) });
 
   return [propsListener, run];
 }
