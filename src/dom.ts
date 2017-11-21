@@ -117,7 +117,7 @@ function setup({ sinkName, shouldRun, drivers, setup }, CycleComponent) {
     // grab vtree$ from sinks
     // return the application's `run` function
 
-    const allDrivers = { ...drivers, props: propsSource };
+    const allDrivers = { ...drivers, props: () => propsSource };
     const { sinks, _run } = setup(CycleComponent, allDrivers);
     run = _run;
     vtree$ = xs.from(sinks[sinkName]);
